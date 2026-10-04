@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Study Quiz</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(#dff7ff,#f7fff0);color:#17324d}
+.page{max-width:1100px;margin:auto;padding:16px}.hero{border-radius:24px;overflow:hidden;box-shadow:0 10px 30px #0002;background:#fff}.hero img{width:100%;display:block}
+.subjects{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:20px 0}.subject{border:0;border-radius:20px;padding:22px 14px;color:#fff;cursor:pointer;box-shadow:0 8px 18px #0002}
+.subject:hover{transform:translateY(-2px)}.math{background:#098ee8}.eng{background:#43b83e}.social{background:#f18a0b}
+.icon{font-size:42px}.subject h2{margin:8px 0}.subject p{font-weight:bold;margin:0}.subject small{display:block;margin-top:8px}
+.screen{display:none}.screen.active{display:block}.card{background:white;border-radius:22px;padding:24px;margin-top:18px;box-shadow:0 10px 30px #0002}
+.top{display:flex;justify-content:space-between;align-items:center}.back{border:0;border-radius:10px;padding:10px 14px;cursor:pointer}
+.progress{height:11px;background:#e8eef4;border-radius:20px;overflow:hidden;margin:18px 0}.progress div{height:100%;background:#1597e5}
+.q{font-size:23px;font-weight:800;line-height:1.4;margin:18px 0}.opts{display:grid;gap:12px}.opt{text-align:left;padding:15px;border:2px solid #dbe7f0;border-radius:15px;background:#f9fcff;font-weight:700;cursor:pointer}
+.opt.selected{border-color:#1597e5;background:#dff4ff}.next{width:100%;margin-top:18px;padding:15px;border:0;border-radius:15px;background:#1597e5;color:white;font-weight:bold;cursor:pointer}.next:disabled{opacity:.45}
+.result{text-align:center}.score{font-size:54px;font-weight:900;color:#1597e5}.result button{padding:12px 18px;border:0;border-radius:12px;margin:5px;cursor:pointer;font-weight:bold}.primary{background:#1597e5;color:white}
+@media(max-width:750px){.subjects{grid-template-columns:1fr}.q{font-size:20px}}
+</style>
+</head>
+<body>
+<div class="page">
+<section id="home" class="screen active">
+<div class="hero"><img src="home-screen.png" alt="My Study Quiz"></div>
+<div class="subjects">
+<button class="subject math" onclick="startQuiz()"><div class="icon">🧮</div><h2>MATHS</h2><p>Practice 20 Questions</p><small>Tap to start →</small></button>
+<button class="subject eng" onclick="soon('English')"><div class="icon">📖</div><h2>ENGLISH</h2><p>Practice Questions</p><small>Coming next →</small></button>
+<button class="subject social" onclick="soon('Social Science')"><div class="icon">🌍</div><h2>SOCIAL SCIENCE</h2><p>Practice Questions</p><small>Coming next →</small></button>
+</div>
+</section>
+<section id="quiz" class="screen"><div class="card">
+<div class="top"><button class="back" onclick="home()">← Home</button><b id="qnum"></b></div>
+<div class="progress"><div id="bar"></div></div><div class="q" id="question"></div><div class="opts" id="opts"></div>
+<button class="next" id="next" disabled onclick="next()">Next →</button>
+</div></section>
+<section id="result" class="screen"><div class="card result"><div style="font-size:60px">🏆</div><h1>Quiz Completed!</h1><div class="score" id="score"></div><p id="msg"></p><button class="primary" onclick="startQuiz()">Try Again</button><button onclick="home()">Home</button></div></section>
+</div>
+<script>
+const qs=[
+["What is the predecessor of the smallest five-digit number?",["10,000","9,999","9,998","10,001"],1],
+["How do you write three lakh fifty-eight thousand six hundred ninety-four in numerals?",["3,58,694","3,85,694","3,58,964","3,68,594"],0],
+["What is the number name of 39,986?",["Thirty-nine thousand eight hundred sixty-nine","Thirty-nine thousand nine hundred eighty-six","Thirty-nine thousand nine hundred sixty-eight","Thirty-eight thousand nine hundred eighty-six"],1],
+["The Indian and International number systems are the same till the ______ place.",["Hundreds","Thousands","Ten thousands","Lakhs"],1],
+["Write 9,46,000 in the International number system.",["946,000","94,600","9,460,000","946,00,0"],0],
+["Find the value of 7,00,000 + 80,000 + 9,000 + 300 + 40 + 1.",["7,89,341","7,98,341","7,89,431","7,98,431"],0],
+["Which is the correct ascending order?",["4,567, 3,456, 2,345, 1,234","1,234, 2,345, 3,456, 4,567","2,345, 1,234, 4,567, 3,456","3,456, 2,345, 1,234, 4,567"],1],
+["What is 44,440 + 5,550?",["49,990","50,000","49,900","50,990"],0],
+["What is 99,999 − 1,099?",["98,900","98,990","99,000","98,890"],0],
+["What is 1,230 ÷ 10?",["12 remainder 3","123 remainder 0","120 remainder 3","130 remainder 0"],1],
+["A shop has 29,000 items and sells 11,378 items. How many items are left?",["17,622","18,622","17,722","18,722"],0],
+["What is 12 × ₹990?",["₹10,880","₹11,880","₹12,880","₹11,980"],1],
+["1,20,000 cartons are divided equally into 5 groups. How many cartons are in each group?",["24,000","25,000","20,400","22,000"],0],
+["What is 364 × 1?",["0","1","364","365"],2],
+["What is 250 × 10?",["250","2,500","25,000","2,050"],1],
+["What is 45,172 + 0?",["45,170","45,172","45,173","0"],1],
+["What is 36,235 − 36,235?",["1","36,235","0","36,234"],2],
+["What is 67,999 − 1?",["67,998","67,990","68,000","66,998"],0],
+["What is 285 × 0?",["285","1","0","28"],2],
+["The diameter is the longest ______ of a circle.",["Radius","Chord","Arc","Centre"],1]
+];
+let i=0,score=0,sel=-1;
+function show(id){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");scrollTo(0,0)}
+function home(){show("home")}
+function startQuiz(){i=0;score=0;show("quiz");render()}
+function render(){sel=-1;let x=qs[i];qnum.textContent=`Question ${i+1} of ${qs.length}`;bar.style.width=((i+1)/qs.length*100)+"%";question.textContent=x[0];opts.innerHTML="";x[1].forEach((v,n)=>{let b=document.createElement("button");b.className="opt";b.textContent=String.fromCharCode(65+n)+") "+v;b.onclick=()=>choose(n,b);opts.appendChild(b)});next.disabled=true;next.textContent=i===qs.length-1?"Finish Quiz 🏆":"Next →"}
+function choose(n,b){sel=n;document.querySelectorAll(".opt").forEach(x=>x.classList.remove("selected"));b.classList.add("selected");next.disabled=false}
+function next(){if(sel<0)return;if(sel===qs[i][2])score++;i++;if(i<qs.length)render();else{show("result");document.getElementById("score").textContent=score+" / "+qs.length;msg.textContent=score>=18?"Excellent! 🌟":score>=14?"Great job! 👏":score>=10?"Good try! Keep practising! 💪":"Keep practising — you can do it! 🌈"}}
+function soon(s){alert(s+" questions will be added next. Maths is ready now!")}
+</script>
+</body></html>
