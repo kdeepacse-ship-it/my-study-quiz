@@ -3,72 +3,154 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>My Study Quiz - Maths</title>
+<title>My Study Quiz</title>
 <style>
-*{box-sizing:border-box} body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#eaf4ff,#fff7e6);color:#17324d}
-.container{max-width:760px;margin:auto;padding:20px} .top{background:#fff;border-radius:22px;padding:20px;box-shadow:0 8px 25px #0001;margin-bottom:18px}
-h1{margin:0 0 6px;font-size:30px} .sub{color:#60758a} .progress{height:12px;background:#e5edf5;border-radius:20px;overflow:hidden;margin-top:15px} .bar{height:100%;width:0;background:#4f8cff;transition:.25s}
-.card{background:#fff;border-radius:22px;padding:24px;box-shadow:0 8px 25px #0001} .qnum{font-weight:bold;color:#4f8cff;margin-bottom:10px} .question{font-size:21px;line-height:1.5;font-weight:600;margin-bottom:18px;white-space:pre-line}
-.option{display:block;width:100%;padding:14px;margin:10px 0;border:2px solid #dce6ef;border-radius:14px;background:#fff;text-align:left;font-size:17px;cursor:pointer}
-.option:hover{background:#f3f8ff} .option.selected{border-color:#4f8cff;background:#edf5ff} .option.correct{border-color:#28a745;background:#ecfff1} .option.wrong{border-color:#dc3545;background:#fff0f0}
-button{border:0;border-radius:14px;padding:13px 22px;font-size:17px;font-weight:bold;cursor:pointer;background:#4f8cff;color:white;margin-top:14px} button:disabled{opacity:.45;cursor:not-allowed}
-.center{text-align:center} .score{font-size:54px;font-weight:800;color:#4f8cff} .small{font-size:14px;color:#6d7d8c}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(135deg,#dff7ff 0%,#fff4cf 50%,#e9ffe7 100%);min-height:100vh;color:#17324d}
+.page{max-width:1050px;margin:auto;padding:20px}
+.screen{display:none} .screen.active{display:block}
+.home-card{background:rgba(255,255,255,.96);border-radius:30px;padding:28px;box-shadow:0 15px 45px rgba(20,70,100,.18)}
+.logo{text-align:center;padding:22px;border-radius:24px;background:linear-gradient(135deg,#1b9be5,#72d6ff);color:white}
+.logo .book{font-size:60px} .logo h1{font-size:42px;margin:5px 0 8px} .logo p{font-size:18px;margin:0;font-weight:bold}
+.subjects{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:25px}
+.subject{border:0;border-radius:24px;padding:25px 16px;color:#fff;cursor:pointer;box-shadow:0 10px 22px rgba(0,0,0,.15);transition:.15s}
+.subject:hover{transform:translateY(-4px)} .math{background:linear-gradient(135deg,#087fe0,#20bfff)}
+.english{background:linear-gradient(135deg,#2ca33c,#83dc42)} .social{background:linear-gradient(135deg,#ed7b08,#ffc126)}
+.subject .icon{font-size:48px} .subject h2{margin:8px 0 5px;font-size:25px} .subject p{margin:0;font-weight:bold}
+.footer{text-align:center;margin-top:20px;color:#5e7180;font-size:14px}
+.quiz-card,.result-card{background:rgba(255,255,255,.97);border-radius:28px;padding:28px;box-shadow:0 15px 45px rgba(20,70,100,.16)}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.back{border:0;background:#edf3f7;border-radius:13px;padding:11px 16px;font-weight:bold;cursor:pointer}
+.qnum{font-weight:800;color:#087fe0;font-size:17px}
+.progress{height:13px;background:#e6edf2;border-radius:20px;overflow:hidden;margin:20px 0}
+.bar{height:100%;background:linear-gradient(90deg,#0d93df,#58c9ff);width:0;transition:.25s}
+.question{font-size:25px;font-weight:800;line-height:1.45;margin:22px 0}
+.option{display:block;width:100%;text-align:left;border:2px solid #1f2937;background:#263445;color:#ffffff;border-radius:16px;padding:16px;margin:12px 0;font-size:17px;font-weight:700;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,.12)}
+.option:hover{background:#33465c;border-color:#55b9ff;color:#ffffff} .option.selected{border-color:#55b9ff;background:#174a6b;color:#ffffff}
+.option.correct{border-color:#43d17a;background:#176b3a;color:#ffffff} .option.wrong{border-color:#ff6b6b;background:#8f2630;color:#ffffff}
+.next{width:100%;border:0;border-radius:16px;padding:16px;background:linear-gradient(90deg,#087fe0,#1bb8ef);color:#fff;font-size:18px;font-weight:800;cursor:pointer;margin-top:12px}
+.next:disabled{opacity:.45;cursor:not-allowed}
+.msg{margin-top:12px;font-weight:bold;min-height:22px}
+.result-card{text-align:center} .trophy{font-size:70px} .score{font-size:58px;font-weight:900;color:#087fe0;margin:10px}
+.result-btn{border:0;border-radius:14px;padding:13px 20px;margin:6px;font-weight:bold;cursor:pointer}
+.primary{background:#087fe0;color:#fff} .secondary{background:#edf3f7;color:#17324d}
+@media(max-width:760px){.subjects{grid-template-columns:1fr}.logo h1{font-size:32px}.question{font-size:21px}.page{padding:10px}}
 </style>
 </head>
 <body>
-<div class="container">
-<div class="top">
-<h1>🧮 My Study Quiz – Maths</h1>
-<div class="sub">Choose the answer and check your score.</div>
-<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="page">
+
+<section id="home" class="screen active">
+  <div class="home-card">
+    <div class="logo">
+      <div class="book">📚</div>
+      <h1>MY STUDY QUIZ</h1>
+      <p>Learn • Practice • Improve!</p>
+    </div>
+
+    <div class="subjects">
+      <button class="subject math" onclick="startQuiz()">
+        <div class="icon">🧮</div><h2>MATHS</h2><p>45 Questions</p>
+      </button>
+      <button class="subject english" onclick="comingSoon('English')">
+        <div class="icon">📖</div><h2>ENGLISH</h2><p>Coming Next</p>
+      </button>
+      <button class="subject social" onclick="comingSoon('Social Science')">
+        <div class="icon">🌍</div><h2>SOCIAL SCIENCE</h2><p>Coming Next</p>
+      </button>
+    </div>
+    <div class="footer">Questions → Answers → Score 🏆</div>
+  </div>
+</section>
+
+<section id="quiz" class="screen">
+  <div class="quiz-card">
+    <div class="top">
+      <button class="back" onclick="show('home')">← Home</button>
+      <div class="qnum" id="qnum"></div>
+    </div>
+    <div class="progress"><div class="bar" id="bar"></div></div>
+    <div class="question" id="question"></div>
+    <div id="options"></div>
+    <div class="msg" id="msg"></div>
+    <button class="next" id="next" disabled onclick="nextQuestion()">Next →</button>
+  </div>
+</section>
+
+<section id="result" class="screen">
+  <div class="result-card">
+    <div class="trophy">🏆</div>
+    <h1>Maths Quiz Complete!</h1>
+    <div class="score" id="score"></div>
+    <p id="resultMsg"></p>
+    <button class="result-btn primary" onclick="startQuiz()">Try Again</button>
+    <button class="result-btn secondary" onclick="show('home')">Home</button>
+  </div>
+</section>
+
 </div>
-<div id="app"></div>
-</div>
+
 <script>
 const questions = [["I am the predecessor of the smallest five-digit number. Who am I?", ["10,000", "9,998", "9,999", "10,001"], 2], ["Three lakh fifty-eight thousand six hundred ninety-four is written as _______.", ["3,58,694", "3,94,586", "3,56,984", "3,98,564"], 0], ["Pick the number name for 39,986.", ["thirty thousand nine hundred eighty-six", "thirty lakh nine thousand nine hundred eighty-six", "thirty-nine thousand nine hundred eighty-six", "thirty-nine hundred eighty-six"], 2], ["The Indian and the International systems are same till _______.", ["10,00,000", "1,00,000", "1,000", "10,000"], 2], ["9,46,000 in the International system is written as _______.", ["946,000", "94,600", "94,60,00", "9,460,00"], 0], ["7,00,000 + 80,000 + 9,000 + 300 + 40 + 1 = _________.", ["7,98,341", "7,893,41", "7,89,941", "7,99,341"], 0], ["Which among these is arranged in ascending order?", ["9,000, 90,000, 99,000, 9,00,000", "9,000, 99,000, 90,000, 9,00,000", "90,000, 9,000, 99,000, 9,00,000", "9,00,000, 99,000, 90,000, 9,000"], 0], ["Which among these is rounded off correctly?", ["5,606 rounded off to the nearest 10 is 5,600.", "9,999 rounded off to the nearest 1,000 is 9,000.", "76,839 rounded off to the nearest 100 is 76,800.", "76,839 rounded off to the nearest 1,000 is 76,000."], 2], ["Which set is not arranged in descending order?", ["98,765; 97,865; 96,785; 95,678", "3,989; 3,987; 3,876; 3,786", "88,585; 85,858; 85,585; 88,858", "9,999; 9,998; 9,997; 9,996"], 2], ["Pick the incorrect statement.", ["Rahul: One lakh is the smallest six-digit number.", "Naren: Ten thousand is the smallest five-digit number.", "Prem: One thousand is the smallest four-digit number.", "Babu: One lakh is the largest six-digit number."], 3], ["24,000 + 34,590 = 58,590. Here, 24,000 and 34,590 are called _________.", ["addends", "minuends", "multiplicands", "dividends"], 0], ["44,440 + 5,550 = _________.", ["49,940", "44,990", "49,490", "46,990"], 0], ["99,999 − 1,099 = _________.", ["99,900", "98,900", "89,900", "89,899"], 1], ["Pick the correct expanded notation method to solve 405 × 5.", ["(400 + 5) × 5", "400 × 5", "(100 + 5) × 4", "(500 + 4) × 5"], 0], ["Divide 1,230 by 10 and find the remainder.", ["10", "123", "0", "12,300"], 2], ["There are 29,000 children in a village. So far, 11,378 children got vaccinated. How many are yet to be vaccinated?", ["17,692", "17,622", "17,624", "17,924"], 1], ["Shruti buys 12 kilograms of raw rice. Each kilogram costs ₹990. How much does 12 kilograms cost her?", ["₹11,800", "₹10,880", "₹10,800", "₹11,880"], 3], ["A merchant has 1,20,000 cartons to ship overseas. He hires 5 ships, each carrying an equal number of cartons. How many cartons did each ship carry?", ["20,000", "24,000", "30,000", "34,000"], 1], ["Which of these estimations is correct?", ["319 + 666 = 1,100", "465 − 279 = 300", "916 + 822 = 1,700", "981 − 537 = 400"], 2], ["Nirmal Nair has a coconut farm. He takes 1,000 coconuts home and gives it to his wife. She keeps 200 coconuts for them and divides the rest equally among their four sons. How many coconuts does each son get?", ["200", "250", "150", "175"], 0], ["To draw a circle of 10 cm diameter, I need to measure _________ in my compass.", ["10 m", "20 cm", "10 cm", "5 cm"], 3], ["The diameter of a round plate is 12 cm. Find its radius.", ["4 cm", "6 cm", "5 cm", "20 cm"], 1], ["The radius of this bangle is 4 cm. Find its diameter.", ["8 cm", "2 cm", "4 cm", "10 cm"], 0], ["The distance between Nila and the circle she drew is 2 feet uniformly from all directions. Which part of the circle measures 2 feet?", ["circumference", "centre", "diameter", "radius"], 3], ["The circles in a compact disk (CD) come under which type?", ["intersecting circles", "concentric circles", "overlapping circles", "circles touching externally"], 1], ["I drew a circle with 10 cm radius. Using the same centre point, I drew another circle with a radius that is 4 cm less. Find the radius of the smaller circle.", ["12 cm", "6 cm", "8 cm", "20 cm"], 1], ["Pick the true statement.", ["The radius is the longest chord in the circle.", "The length of the diameter of the circle is half of its radius.", "Concentric circles have the same centre.", "The diameter of the circle cuts it into two chords."], 2], ["I drew a circle with 3 cm radius. Using the same centre point, I drew another circle with a radius that is 2 cm more. The diameter of the bigger circle will be _________.", ["5 cm", "12 cm", "10 cm", "6 cm"], 3], ["In a pair of concentric circles, the radius of the bigger circle is 12 cm and that of the smaller one is 7 cm. A chord of length 24 cm passes through the centre. What will the chord make?", ["4 semicircles", "2 semicircles", "3 semicircles", "6 semicircles"], 1], ["A pair of concentric circles have radii of 5 cm and 9 cm, respectively. 2 chords pass through the center of the circles, as shown. Which is true about their lengths?", ["longer chord = 18 cm; shorter chord = 10 cm", "longer chord = 9 cm; shorter chord = 5 cm", "longer chord = 5 cm; shorter chord = 9 cm", "longer chord = 10 cm; shorter chord = 18 cm"], 0], ["Pick the factor of 26.", ["15", "12", "13", "14"], 2], ["Choose the correct number that fills the gap in this factor tree.", ["9", "8", "7", "6"], null], ["The common factor for all even numbers is _________.", ["2", "4", "6", "8"], 0], ["Which is not a square number?", ["16", "49", "33", "81"], 2], ["There are 8 laddoos in a pan. Which is the correct arrangement based on the factors?", ["2 rows of 3 laddoos each", "4 rows of 5 laddoos each", "8 rows of 2 laddoos each", "2 rows of 4 laddoos each"], 3], ["Pick the false statement.", ["Every number is the first multiple of itself.", "1 is a multiple of every number.", "1 is a factor of every number.", "Every number is the highest factor of itself."], 1], ["Pick the incorrect number—factors match.", ["27—3, 9", "39—3, 13", "42—6, 7, 14", "68—2, 4, 17, 32"], 3], ["Which of the following is a cube number?", ["144", "125", "225", "81"], 1], ["Which among these have been correctly matched with their first 4 multiples? (1) 5—5, 10, 15, 20  (2) 6—6, 12, 24, 30  (3) 7—7, 14, 28, 35  (4) 8—8, 16, 24, 32", ["only (3) and (4)", "only (2) and (4)", "only (2) and (3)", "only (1) and (4)"], 3], ["Which among the following are true? (1) There are infinite multiples of a number. (2) There are infinite factors for a number. (3) All multiples of a number lie between 1 and the number. (4) All factors of a number lie between 1 and the number.", ["only (1) and (4)", "only (2) and (3)", "only (1) and (3)", "only (2) and (4)"], 0], ["4,83,695 + 1,51,343 =", ["6,25,038", "6,35,038", "6,45,038", "6,55,038"], 1], ["7,24,325 − 5,36,704 =", ["1,87,621", "1,97,621", "2,87,621", "1,78,621"], 0], ["125 × 8 =", ["900", "1,000", "1,100", "1,200"], 1], ["Which of the following letters is symmetrical?", ["L", "W", "J", "P"], 1], ["Which shape can tessellate without gaps?", ["Circle", "Square", "Oval", "Semicircle"], 1]];
-let i=0, score=0, chosen=null;
-const app=document.getElementById('app'), bar=document.getElementById('bar');
-function render(){
- chosen=null;
- const q=questions[i];
- bar.style.width=((i)/questions.length*100)+'%';
- let opts=q[1].map((x,n)=>`<button class="option" onclick="choose(${n})" id="o${n}">${String.fromCharCode(65+n)}. ${x}</button>`).join('');
- app.innerHTML=`<div class="card">
- <div class="qnum">Question ${i+1} of ${questions.length}</div>
- <div class="question">${q[0]}</div>
- ${opts}
- <div id="msg" class="small"></div>
- <button id="next" onclick="next()" disabled>${i===questions.length-1?'Finish Quiz':'Next Question'}</button>
- </div>`;
+let current=0, score=0, selected=null;
+
+function show(id){
+ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
+ window.scrollTo(0,0);
 }
-function choose(n){
- if(chosen!==null)return;
- chosen=n;
- document.querySelectorAll('.option').forEach(x=>x.disabled=true);
- const q=questions[i];
+function startQuiz(){
+ current=0; score=0; show('quiz'); renderQuestion();
+}
+function renderQuestion(){
+ selected=null;
+ const q=questions[current];
+ document.getElementById('qnum').textContent=`Question ${current+1} of ${questions.length}`;
+ document.getElementById('bar').style.width=((current+1)/questions.length*100)+'%';
+ document.getElementById('question').textContent=q[0];
+ document.getElementById('msg').textContent='';
+ const box=document.getElementById('options'); box.innerHTML='';
+ q[1].forEach((answer,n)=>{
+   const b=document.createElement('button');
+   b.className='option';
+   b.textContent=String.fromCharCode(65+n)+') '+answer;
+   b.onclick=()=>choose(n,b);
+   box.appendChild(b);
+ });
+ const next=document.getElementById('next');
+ next.disabled=true;
+ next.textContent=current===questions.length-1?'Finish Quiz 🏆':'Next →';
+}
+function choose(n,button){
+ if(selected!==null)return;
+ selected=n;
+ const q=questions[current];
+ document.querySelectorAll('.option').forEach(b=>b.disabled=true);
  if(q[2]===null){
-   document.getElementById('o'+n).classList.add('selected');
-   document.getElementById('msg').textContent='This question needs the missing factor-tree image from the source.';
+   button.classList.add('selected');
+   document.getElementById('msg').textContent='This question needs its original factor-tree diagram.';
  } else if(n===q[2]){
-   score++; document.getElementById('o'+n).classList.add('correct');
+   score++;
+   button.classList.add('correct');
    document.getElementById('msg').textContent='🎉 Correct!';
  } else {
-   document.getElementById('o'+n).classList.add('wrong');
-   document.getElementById('o'+q[2]).classList.add('correct');
+   button.classList.add('wrong');
+   document.getElementById('options').children[q[2]].classList.add('correct');
    document.getElementById('msg').textContent='Keep trying! The correct answer is highlighted.';
  }
  document.getElementById('next').disabled=false;
 }
-function next(){
- if(i<questions.length-1){i++;render();}else{
-  bar.style.width='100%';
-  app.innerHTML=`<div class="card center"><div class="score">${score} / ${questions.length-1}</div>
-  <h2>🎉 Maths Quiz Complete!</h2>
-  <p>You answered ${score} questions correctly.</p>
-  <button onclick="i=0;score=0;render()">Try Again</button>
-  </div>`;
+function nextQuestion(){
+ if(selected===null)return;
+ if(current<questions.length-1){current++;renderQuestion();}
+ else{
+   show('result');
+   document.getElementById('score').textContent=score+' / '+(questions.length-1);
+   document.getElementById('resultMsg').textContent =
+     score>=40?'Amazing! 🌟':score>=32?'Excellent work! 👏':score>=24?'Good job! Keep practising! 💪':'Keep practising — you can do it! 🌈';
  }
 }
-render();
+function comingSoon(subject){alert(subject+' questions will be added next. Maths is ready now!');}
 </script>
-</body></html>
+</body>
+</html>
